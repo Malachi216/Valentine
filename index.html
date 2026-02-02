@@ -308,37 +308,36 @@ function overlaps(rectA, rectB, padding = 20) {
 
 
 function randomSpotAvoidingYes() {
-  const wrapRect = actionsWrap.getBoundingClientRect();
-  const yesRect  = yesBtn.getBoundingClientRect();
-
   const bw = noBtn.offsetWidth;
   const bh = noBtn.offsetHeight;
 
+  const wrapW = actionsWrap.clientWidth;
+  const wrapH = actionsWrap.clientHeight;
+
   const pad = 10;
 
-  const maxX = actionsWrap.clientWidth  - bw - pad;
-  const maxY = actionsWrap.clientHeight - bh - pad;
+  // Define a "center forbidden column" (where YES lives)
+  // NO will only spawn in left or right zone
+  const centerForbiddenW = Math.min(260, wrapW * 0.55); // big forbidden middle area
+  const leftZoneMaxX  = (wrapW - centerForbiddenW) / 2 - bw - pad;
+  const rightZoneMinX = (wrapW + centerForbiddenW) / 2 + pad;
 
-  let x = pad, y = pad;
+  // Choose left or right zone
+  const useLeft = Math.random() < 0.5;
 
-  for (let i = 0; i < 40; i++) {
-    x = pad + Math.random() * Math.max(1, maxX - pad);
-    y = pad + Math.random() * Math.max(1, maxY - pad);
-
-    // Candidate NO rect in viewport coords
-    const candidateRect = {
-      left:   wrapRect.left + x,
-      right:  wrapRect.left + x + bw,
-      top:    wrapRect.top  + y,
-      bottom: wrapRect.top  + y + bh
-    };
-
-    // If it does NOT overlap YES, accept it
-    if (!overlaps(candidateRect, yesRect, 24)) break;
+  let x;
+  if (useLeft) {
+    x = pad + Math.random() * Math.max(1, leftZoneMaxX - pad);
+  } else {
+    x = rightZoneMinX + Math.random() * Math.max(1, (wrapW - bw - pad) - rightZoneMinX);
   }
+
+  // Y anywhere (but inside wrapper)
+  const y = pad + Math.random() * Math.max(1, (wrapH - bh - pad) - pad);
 
   placeNoButton(x, y);
 }
+
 
 
 function evadePointer(clientX, clientY){
@@ -379,19 +378,26 @@ actionsWrap.addEventListener("mousemove", (e) => {
 
 // Mobile: run away when finger approaches / taps
 actionsWrap.addEventListener("touchstart", (e) => {
-  const t = e.touches[0];
-  if(!t) return;
-  evadePointer(t.clientX, t.clientY);
-}, { passive: true });
+  // stop the tap from triggering YES if NO is near it
+  e.preventDefault();
 
-noBtn.addEventListener("click", (e) => {
+  const t = e.touches[0];
+  if (!t) return;
+
+  // If the tap is anywhere inside actionsWrap, make NO jump away
+  randomSpotAvoidingYes();
+}, { passive: false, capture: true });
+
+actionsWrap.addEventListener("touchmove", (e) => {
   e.preventDefault();
   randomSpotAvoidingYes();
-});
+}, { passive: false });
 
 // Initial placement + re-place on resize so it never becomes unreachable
 window.addEventListener("resize", () => randomSpotAvoidingYes());
-randomSpotAvoidingYes();
+requestAnimationFrame(() => requestAnimationFrame(() => randomSpotAvoidingYes()));
+
+
 
 // ===== Sparks / Fireworks after YES =====
 function spawnSparks(count = 12) {

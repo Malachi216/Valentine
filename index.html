@@ -378,15 +378,18 @@ actionsWrap.addEventListener("mousemove", (e) => {
 
 // Mobile: run away when finger approaches / taps
 actionsWrap.addEventListener("touchstart", (e) => {
-  // stop the tap from triggering YES if NO is near it
+  // If they tapped YES, allow it (don't block default)
+  if (e.target && (e.target.id === "yesBtn" || e.target.closest("#yesBtn"))) {
+    return;
+  }
+
+  // Otherwise, block the tap from accidentally clicking YES
   e.preventDefault();
 
-  const t = e.touches[0];
-  if (!t) return;
-
-  // If the tap is anywhere inside actionsWrap, make NO jump away
+  // Make NO jump away
   randomSpotAvoidingYes();
 }, { passive: false, capture: true });
+
 
 actionsWrap.addEventListener("touchmove", (e) => {
   e.preventDefault();
@@ -395,7 +398,8 @@ actionsWrap.addEventListener("touchmove", (e) => {
 
 // Initial placement + re-place on resize so it never becomes unreachable
 window.addEventListener("resize", () => randomSpotAvoidingYes());
-requestAnimationFrame(() => randomSpotAvoidingYes());
+requestAnimationFrame(() => requestAnimationFrame(() => randomSpotAvoidingYes()));
+
 
 
 // ===== Sparks / Fireworks after YES =====
@@ -447,4 +451,3 @@ yesBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
-

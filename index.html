@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine?</title>
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0f172a;
+      --card:#101a33cc;
+      --border:#ffffff22;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --yes:#ef4444;
+      --yes2:#dc2626;
+      --no:#94a3b8;
+      --shadow: 0 30px 80px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% 10%, #ff4d6d22, transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, #60a5fa22, transparent 55%),
+        radial-gradient(900px 700px at 50% 100%, #a78bfa22, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .card{
+      width:min(760px, 92vw);
+      padding:28px 24px 24px;
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:var(--card);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .top{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+
+    .art{
+      width:120px;
+      height:120px;
+      border-radius:22px;
+      background: linear-gradient(145deg, #ff4d6d22, #60a5fa22);
+      border:1px solid var(--border);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .art svg{
+      width:92px;
+      height:92px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+      transform: rotate(-6deg);
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height:1.15;
+      letter-spacing:.2px;
+    }
+
+    .sub{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .actionsWrap{
+        margin-top:22px;
+        position:relative;   /* important */
+        height:130px;        /* give a bit more room */
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .actions{
+        display:flex;
+        gap:14px;
+        align-items:center;
+        justify-content:center;
+        /* REMOVE position:relative; */
+    }
+
+
+    button{
+      border:0;
+      cursor:pointer;
+      border-radius:14px;
+      font-weight:700;
+      letter-spacing:.2px;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+    }
+
+    button:active{
+      transform: translateY(1px) scale(.99);
+    }
+
+    #yesBtn{
+      padding:18px 34px;
+      font-size:18px;
+      color:white;
+      background: linear-gradient(180deg, var(--yes), var(--yes2));
+      box-shadow: 0 14px 30px rgba(239,68,68,.25);
+    }
+    #yesBtn:hover{ filter: brightness(1.04); }
+
+    #noBtn{
+        padding:12px 18px;
+        font-size:14px;
+        color:#0b1220;
+        background: linear-gradient(180deg, #cbd5e1, var(--no));
+        box-shadow: 0 10px 22px rgba(148,163,184,.18);
+        position:absolute;
+        z-index: 50;
+        touch-action: none; /* helps on mobile */
+        left: 60%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+    }
+
+
+    .yay{
+      text-align:center;
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight:900;
+      letter-spacing:1px;
+      margin: 8px 0 0;
+      display:none;
+    }
+
+    .yay small{
+      display:block;
+      margin-top:6px;
+      font-size: 14px;
+      font-weight:600;
+      color: var(--muted);
+      letter-spacing:.2px;
+    }
+
+    /* Firework GIF glows */
+    .spark{
+      position:absolute;
+      width: 120px;
+      height: 120px;
+      pointer-events:none;
+      opacity:0;
+      animation: floaty 2.8s ease-in-out infinite, popin .35s ease forwards;
+      filter: drop-shadow(0 0 18px rgba(255,255,255,.25));
+      mix-blend-mode: screen;
+    }
+
+    @keyframes popin{
+      from{ opacity:0; transform: scale(.6); }
+      to{ opacity:1; transform: scale(1); }
+    }
+
+    @keyframes floaty{
+      0%,100%{ transform: translateY(0) scale(1); }
+      50%{ transform: translateY(-12px) scale(1.03); }
+    }
+
+    /* Subtle animated shine in the card */
+    .shine{
+      position:absolute;
+      inset:-40% -20%;
+      background: radial-gradient(circle at 30% 40%, #ffffff14, transparent 55%);
+      transform: rotate(8deg);
+      animation: drift 10s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes drift{
+      0%,100%{ transform: translate(-6%, -3%) rotate(8deg); }
+      50%{ transform: translate(6%, 3%) rotate(8deg); }
+    }
+
+    .footerNote{
+      margin-top:16px;
+      text-align:center;
+      color: #9fb1ca;
+      font-size: 12.5px;
+    }
+
+    .hidden{ display:none !important; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="shine"></div>
+
+    <div class="top">
+      <div class="art" aria-hidden="true">
+        <!-- Cute teddy/heart-ish vector (inline SVG) -->
+        <svg viewBox="0 0 128 128" fill="none">
+          <!-- ears -->
+          <circle cx="40" cy="36" r="18" fill="#F59E0B"/>
+          <circle cx="88" cy="36" r="18" fill="#F59E0B"/>
+          <circle cx="40" cy="36" r="11" fill="#FCD34D" opacity=".85"/>
+          <circle cx="88" cy="36" r="11" fill="#FCD34D" opacity=".85"/>
+
+          <!-- head -->
+          <circle cx="64" cy="64" r="38" fill="#F59E0B"/>
+          <circle cx="64" cy="74" r="22" fill="#FCD34D" opacity=".9"/>
+
+          <!-- eyes -->
+          <circle cx="50" cy="60" r="5" fill="#0b1220"/>
+          <circle cx="78" cy="60" r="5" fill="#0b1220"/>
+          <circle cx="48" cy="58" r="2" fill="#ffffff" opacity=".8"/>
+          <circle cx="76" cy="58" r="2" fill="#ffffff" opacity=".8"/>
+
+          <!-- nose -->
+          <path d="M64 66c6 0 10 3 10 7 0 5-5 8-10 8s-10-3-10-8c0-4 4-7 10-7z" fill="#111827"/>
+          <path d="M64 77c-7 0-12 6-14 10 4 3 9 5 14 5s10-2 14-5c-2-4-7-10-14-10z" fill="#111827" opacity=".3"/>
+
+          <!-- little heart -->
+          <path d="M98 86c0-6 5-10 10-10 6 0 10 4 10 10 0 10-12 18-20 24-8-6-20-14-20-24 0-6 4-10 10-10 5 0 10 4 10 10z"
+                fill="#EF4444" opacity=".95"/>
+        </svg>
+      </div>
+
+      <div class="text">
+        <h1>Emmanuella, will you be my valentine?</h1>
+        <p class="sub">Be honest… but choose wisely 😄</p>
+      </div>
+    </div>
+
+    <div class="actionsWrap" id="actionsWrap">
+        <div class="actions" id="actions">
+          <button id="yesBtn">Yes ❤️</button>
+        </div>
+        <button id="noBtn" aria-label="No">No</button>
+      </div>
+
+    <div class="yay" id="yay">
+      YAYYY!!!
+      <small>🎆🎇💖</small>
+    </div>
+
+    <div class="footerNote">Made with love (and a stubborn “No” button).</div>
+  </div>
+
+  <script>
+    // ====== CONFIG: put your sparkle/firework GIF URLs here ======
+    // Tip: you can also download gifs into your repo and use: "gifs/firework1.gif"
+    const GIF_URLS = [
+  "gifs/fireworks1.gif",
+  "gifs/fireworks2.gif",
+  "gifs/sparkle1.gif"
+];
+
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const actionsWrap = document.getElementById("actionsWrap");
+    const actions = document.getElementById("actions");
+    const yay = document.getElementById("yay");
+    const card = document.getElementById("card");
+
+   function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+function placeNoButton(x, y){
+  const wrapW = actionsWrap.clientWidth;
+  const wrapH = actionsWrap.clientHeight;
+
+  const bw = noBtn.offsetWidth;
+  const bh = noBtn.offsetHeight;
+
+  const pad = 10;
+
+  const nx = clamp(x, pad, wrapW - bw - pad);
+  const ny = clamp(y, pad, wrapH - bh - pad);
+
+  noBtn.style.left = nx + "px";
+  noBtn.style.top  = ny + "px";
+  noBtn.style.transform = "translate(0,0)";
+  noBtn.style.display = "inline-block";
+}
+
+function randomSpotAvoidingYes(){
+  const wrapRect = actionsWrap.getBoundingClientRect();
+  const yesRect  = yesBtn.getBoundingClientRect();
+
+  const bw = noBtn.offsetWidth;
+  const bh = noBtn.offsetHeight;
+
+  const pad = 10;
+  const maxX = actionsWrap.clientWidth  - bw - pad;
+  const maxY = actionsWrap.clientHeight - bh - pad;
+
+  let x=pad, y=pad;
+  for(let i=0;i<30;i++){
+    x = pad + Math.random() * Math.max(1, maxX - pad);
+    y = pad + Math.random() * Math.max(1, maxY - pad);
+
+    // candidate center in viewport coords
+    const cx = wrapRect.left + x + bw/2;
+    const cy = wrapRect.top  + y + bh/2;
+
+    const dx = cx - (yesRect.left + yesRect.width/2);
+    const dy = cy - (yesRect.top  + yesRect.height/2);
+    const dist = Math.hypot(dx, dy);
+
+    if(dist > 140) break; // stay away from YES
+  }
+
+  placeNoButton(x, y);
+}
+
+function evadePointer(clientX, clientY){
+  const wrapRect = actionsWrap.getBoundingClientRect();
+
+  // pointer position inside wrapper
+  const px = clientX - wrapRect.left;
+  const py = clientY - wrapRect.top;
+
+  const bw = noBtn.offsetWidth;
+  const bh = noBtn.offsetHeight;
+
+  // current button center (inside wrapper coords)
+  const bx = (parseFloat(noBtn.style.left) || 0) + bw/2;
+  const by = (parseFloat(noBtn.style.top)  || 0) + bh/2;
+
+  // move away vector
+  const vx = bx - px;
+  const vy = by - py;
+  const len = Math.hypot(vx, vy) || 1;
+
+  const step = 120; // how far it jumps away
+  const nx = bx + (vx/len)*step - bw/2;
+  const ny = by + (vy/len)*step - bh/2;
+
+  placeNoButton(nx, ny);
+}
+
+// Run away when pointer gets close
+actionsWrap.addEventListener("mousemove", (e) => {
+  const rect = noBtn.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top  + rect.height/2;
+
+  const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+  if(dist < 130) evadePointer(e.clientX, e.clientY);
+});
+
+// Mobile: run away when finger approaches / taps
+actionsWrap.addEventListener("touchstart", (e) => {
+  const t = e.touches[0];
+  if(!t) return;
+  evadePointer(t.clientX, t.clientY);
+}, { passive: true });
+
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  randomSpotAvoidingYes();
+});
+
+// Initial placement + re-place on resize so it never becomes unreachable
+window.addEventListener("resize", () => randomSpotAvoidingYes());
+randomSpotAvoidingYes();
+
+// ===== Sparks / Fireworks after YES =====
+function spawnSparks(count = 12) {
+  // remove existing sparks if any
+  document.querySelectorAll(".spark").forEach(el => el.remove());
+
+  const cardRect = card.getBoundingClientRect();
+
+  for (let i = 0; i < count; i++) {
+    const img = document.createElement("img");
+    img.className = "spark";
+    img.src = GIF_URLS[i % GIF_URLS.length];
+
+    // random size
+    const size = 90 + Math.random() * 90;
+    img.style.width = size + "px";
+    img.style.height = size + "px";
+
+    // random position inside card
+    const pad = 10;
+    const x = pad + Math.random() * (cardRect.width - size - pad * 2);
+    const y = pad + Math.random() * (cardRect.height - size - pad * 2);
+
+    img.style.left = x + "px";
+    img.style.top = y + "px";
+
+    // random animation delay
+    img.style.animationDelay = (Math.random() * 0.9) + "s";
+
+    card.appendChild(img);
+  }
+}
+
+// YES click: hide buttons area, show YAY, spawn sparks
+yesBtn.addEventListener("click", () => {
+  // Hide the whole actions area (YES + NO)
+  actionsWrap.style.visibility = "hidden";
+    actionsWrap.style.height = "130px";
+
+  // Show the yay text
+  yay.style.display = "block";
+
+  // show fireworks / spark glows
+  spawnSparks(12);
+});
+
+
+  </script>
+</body>
+</html>

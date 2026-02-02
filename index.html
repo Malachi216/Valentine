@@ -434,6 +434,12 @@ function spawnSparks(count = 12) {
   }
 }
 
+noBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  randomSpotAvoidingYes();
+});
+
+
 function onYes() {
   actionsWrap.style.visibility = "hidden";
   actionsWrap.style.height = "130px";

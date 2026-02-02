@@ -391,6 +391,11 @@ actionsWrap.addEventListener("touchstart", (e) => {
 }, { passive: false, capture: true });
 
 
+actionsWrap.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  randomSpotAvoidingYes();
+}, { passive: false });
+
 // Initial placement + re-place on resize so it never becomes unreachable
 window.addEventListener("resize", () => randomSpotAvoidingYes());
 requestAnimationFrame(() => requestAnimationFrame(() => randomSpotAvoidingYes()));
@@ -429,6 +434,28 @@ function spawnSparks(count = 12) {
   }
 }
 
+function onYes() {
+  actionsWrap.style.visibility = "hidden";
+  actionsWrap.style.height = "130px";
+  yay.style.display = "block";
+  spawnSparks(12);
+}
+
+// Desktop click works
+yesBtn.addEventListener("click", onYes);
+
+// Mobile: ensure it works even if click is not synthesized
+yesBtn.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  onYes();
+}, { passive: false });
+
+// Even better modern support
+yesBtn.addEventListener("pointerup", (e) => {
+  // Only respond to actual pointer events (touch/pen/mouse)
+  onYes();
+});
+
 // YES click: hide buttons area, show YAY, spawn sparks
 yesBtn.addEventListener("click", () => {
   // Hide the whole actions area (YES + NO)
@@ -446,4 +473,3 @@ yesBtn.addEventListener("click", () => {
   </script>
 </body>
 </html>
-
